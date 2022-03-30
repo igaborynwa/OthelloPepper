@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">OthelloPepper</string>
+    <string name="othello_exit">Kilépés</string>
+    <string name="othello_new_game">Új játék</string>
+    <string name="othello_default_point">2</string>
+    <string name="white">FEHÉR</string>
+    <string name="black">FEKETE</string>
+    <string name="othello_result_message">FEHÉR: %1$d, FEKETE: %2$d</string>
+    <string name="othello_result_title">A %1$s bábuval játszó játékos nyert!</string>
+    <string name="othello_draw">Az eredmény döntetlen!</string>
+</resources>

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package hu.netlife.othellopepper.proto;
+
+message Response {
+    string result = 1;
+}
+
+message Event {
+    string type = 1;
+    string messageId = 2;
+    string message = 3;
+}
+
+message Void {
+}
+
+service OthelloService{
+    rpc hello(Void) returns (Response);
+}
