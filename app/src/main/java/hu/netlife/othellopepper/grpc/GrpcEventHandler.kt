@@ -16,9 +16,8 @@ class GrpcEventHandler @Inject constructor() {
 
     fun addEvent(grpcEvent: GrpcEvent) {
         val event = OthelloPepper.Event.newBuilder()
-            .setMessageId(grpcEvent.messageId)
-            .setType(grpcEvent.messageType)
-            .setMessage(grpcEvent.message)
+            .setMessage(grpcEvent.messageType)
+            .setPlayerId(grpcEvent.playerId)
             .build()
         try {
             val offerResult = eventChannel.offer(event)

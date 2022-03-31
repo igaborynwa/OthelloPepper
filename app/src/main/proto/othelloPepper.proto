@@ -7,14 +7,48 @@ message Response {
 }
 
 message Event {
-    string type = 1;
-    string messageId = 2;
-    string message = 3;
+    MessageType message = 1;
+    int32 playerId = 2;
+}
+
+message State{
+    repeated int32 state = 1;
+}
+
+message Action{
+    int32 x = 1;
+    int32 y = 2;
+    int32 playerId = 3;
+}
+
+message Player{
+    string name = 1;
+}
+
+message PlayerId{
+    string name = 1;
+    int32 id = 2;
 }
 
 message Void {
 }
 
+enum MessageType{
+    NEXT = 0;
+    END = 1;
+}
+
 service OthelloService{
     rpc hello(Void) returns (Response);
+
+    rpc getState(Void) returns (State);
+
+    rpc setAction(Action) returns (State);
+
+    rpc connect(Player) returns (PlayerId);
+
+    rpc disconnect(PlayerId) returns (Response);
+
+    rpc streamEvents(Void) returns(stream Event);
+
 }
