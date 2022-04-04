@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         window.hideSystemUI()
     }
 
+    override fun onStart() {
+        super.onStart()
+        window.hideSystemUI()
+    }
+
     private fun initGame(){
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

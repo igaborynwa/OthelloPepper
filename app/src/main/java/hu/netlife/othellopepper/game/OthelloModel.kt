@@ -23,6 +23,17 @@ class OthelloModel @Inject constructor() {
         intArrayOf(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY),
         intArrayOf(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY))
 
+    fun getState(): ArrayList<Int>{
+        val ret = ArrayList<Int>()
+        for (i in 0 until 8) {
+            for (j in 0 until 8) {
+                ret.add(model[i][j])
+            }
+        }
+        return ret
+    }
+
+
     fun resetModel() {
         nextPlayer = 1
         for (i in 0 until 8) {
