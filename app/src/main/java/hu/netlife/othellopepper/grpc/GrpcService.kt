@@ -1,20 +1,37 @@
 package hu.netlife.othellopepper.grpc
 
+import android.app.Activity
+import android.content.Context
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.qualifiers.ApplicationContext
+import hu.netlife.othellopepper.OthelloPepperApplication
+import hu.netlife.othellopepper.OthelloPepperApplication_GeneratedInjector
 import hu.netlife.othellopepper.game.ConnectHelper
 import hu.netlife.othellopepper.game.OthelloModel
 import hu.netlife.othellopepper.proto.OthelloPepper
 import hu.netlife.othellopepper.proto.OthelloServiceGrpcKt
+import hu.netlife.othellopepper.view.MainActivity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class GrpcService @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val othelloModel: OthelloModel,
     private val connectHelper: ConnectHelper,
     private val grpcEventHandler: GrpcEventHandler
 
 ): OthelloServiceGrpcKt.OthelloServiceCoroutineImplBase() {
+    private fun getCurrentActivity(): AppCompatActivity? {
+        return (appContext as OthelloPepperApplication).currentActivity
+    }
+
+    private fun mainActivity(): MainActivity? {
+        return getCurrentActivity() as? MainActivity
+    }
+
     private val defaultResponse: OthelloPepper.Response by lazy{
         OthelloPepper.Response.newBuilder().setResult("OK").build()
     }
@@ -38,8 +55,11 @@ class GrpcService @Inject constructor(
         return OthelloPepper.State.newBuilder().addAllState(currentState).build()
     }
 
-    override suspend fun setAction(request: OthelloPepper.Action): OthelloPepper.State {
-        return super.setAction(request)
+    override suspend fun setAction(request: OthelloPepper.Action): OthelloPepper.Response {
+        val number = connectHelper.getPlayerNumberById(request.playerId)
+        Log.d("Hello", mainActivity().toString())
+        mainActivity()!!.setAction(request.x, request.y,number)
+        return defaultResponse
     }
 
     override fun streamEvents(request: OthelloPepper.Void): Flow<OthelloPepper.Event> {

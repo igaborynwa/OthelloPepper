@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import dagger.hilt.android.AndroidEntryPoint
 import hu.netlife.othellopepper.R
 import hu.netlife.othellopepper.game.OthelloModel
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -151,6 +152,17 @@ class OthelloView: View {
             else -> { d = Math.min(w, h)}
         }
         setMeasuredDimension(d, d)
+    }
+
+    fun setAction(x: Int, y: Int, content: Int){
+        val possible = possibilities.contains(Pair(x, y))
+        if (x < 8 && y < 8 && othelloModel.getFieldContent(x, y) == OthelloModel.EMPTY && possible) {
+            othelloModel.setFieldContent(x, y, othelloModel.nextPlayer)
+            othelloViewListener?.onNextPlayerChanged(othelloModel.nextPlayer)
+            val points = othelloModel.getPoints()
+            othelloViewListener?.onPointsChanged(points.first, points.second)
+            invalidate()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

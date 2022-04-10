@@ -43,7 +43,7 @@ service OthelloService{
 
     rpc getState(Void) returns (State);
 
-    rpc setAction(Action) returns (State);
+    rpc setAction(Action) returns (Response);
 
     rpc connect(Player) returns (PlayerId);
 

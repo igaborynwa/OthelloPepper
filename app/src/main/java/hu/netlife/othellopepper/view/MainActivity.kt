@@ -6,13 +6,20 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import hu.netlife.othellopepper.OthelloPepperApplication
 import hu.netlife.othellopepper.R
 import hu.netlife.othellopepper.databinding.ActivityMainBinding
 import hu.netlife.othellopepper.game.OthelloModel
+import hu.netlife.othellopepper.grpc.GrpcEvent
+import hu.netlife.othellopepper.proto.OthelloPepper
 import hu.netlife.othellopepper.util.hideSystemUI
 import hu.netlife.othellopepper.view.customView.OthelloView
 import hu.netlife.othellopepper.viewModel.MainActivityViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as OthelloPepperApplication).currentActivity = this
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         binding= ActivityMainBinding.inflate(layoutInflater)
         initGame()
@@ -45,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.changeNextPlayer(nextPlayer)
             }
             override fun onGameEnded(winner: Int, white: Int, black: Int) {
-                val winnerColor = if(winner == 1) getString(R.string.white) else getString(R.string.black)
+                /*val winnerColor = if(winner == 1) getString(R.string.white) else getString(R.string.black)
                 val title = if(winner<3) String.format(getString(R.string.othello_result_title), winnerColor) else getString(
                     R.string.othello_draw)
                 AlertDialog.Builder(applicationContext)
@@ -57,7 +65,8 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton(getString(R.string.othello_exit)) { _, _ ->
 
                     }
-                    .create().show()
+                    .create().show()*/
+                viewModel.sendWinner(winner)
 
             }
             override fun onPointsChanged(white: Int, black: Int) {
@@ -69,6 +78,15 @@ class MainActivity : AppCompatActivity() {
             restartGame()
         }
         othelloModel.resetModel()
+    }
+
+    fun setAction(x: Int, y: Int, number: Int){
+        if(number!=othelloModel.nextPlayer) throw IllegalStateException("It is not your turn!")
+        if(!othelloModel.checkPossibleSteps().contains(Pair(x,y))) throw IllegalStateException("Move is not possible!")
+        lifecycleScope.launch (Dispatchers.Main){
+            binding.othelloView.setAction(x,y, number)
+        }
+
     }
 
     private fun restartGame(){

@@ -43,4 +43,14 @@ class ConnectHelper @Inject constructor(
 
         return id
     }
+
+    fun getPlayerNumberById(playerId: Int): Int{
+        if(player1?.id == playerId) return 1
+        else if (player2?.id== playerId) return 2
+        throw IllegalStateException("Invalid player id")
+    }
+
+    fun getPlayerIdByNumber(number: Int): Int?{
+        return if (number == 1) player1?.id else player2?.id
+    }
 }
